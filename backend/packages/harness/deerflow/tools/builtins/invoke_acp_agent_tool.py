@@ -188,7 +188,32 @@ def build_invoke_acp_agent_tool(agents: dict) -> BaseTool:
                     client_capabilities=ClientCapabilities(),
                     client_info=Implementation(name="deerflow", title="DeerFlow", version="0.1.0"),
                 )
-                session_kwargs: dict[str, Any] = {"cwd": physical_cwd, "mcp_servers": mcp_servers}
+                
+                # Convert mcp_servers from DeerFlow format to ACP format
+                mcp_servers_list: list[dict[str, Any]] = []
+                for name, config in mcp_servers.items():
+                    transport = config.get("transport", "stdio")
+                    acp_config: dict[str, Any] = {
+                        "name": name,
+                        "type": transport,
+                    }
+                    if transport == "stdio":
+                        acp_config["command"] = config.get("command", "npx")
+                        acp_config["args"] = config.get("args", [])
+                        # Convert env from dict to list of EnvVariable format
+                        env_dict = config.get("env", {})
+                        acp_config["env"] = [
+                            {"name": k, "value": v} for k, v in env_dict.items()
+                        ] if env_dict else []
+                    elif transport in ("http", "sse"):
+                        acp_config["url"] = config.get("url", "")
+                        # Convert headers from dict to list of HttpHeader format
+                        headers_dict = config.get("headers", {})
+                        acp_config["headers"] = [
+                            {"name": k, "value": v} for k, v in headers_dict.items()
+                        ] if headers_dict else []
+                    mcp_servers_list.append(acp_config)
+                session_kwargs: dict[str, Any] = {"cwd": physical_cwd, "mcp_servers": mcp_servers_list}
                 if agent_config.model:
                     session_kwargs["model"] = agent_config.model
                 session = await conn.new_session(**session_kwargs)
