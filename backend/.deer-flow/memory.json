@@ -1,0 +1,138 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2026-04-03T06:31:03.563477Z",
+  "user": {
+    "workContext": {
+      "summary": "",
+      "updatedAt": ""
+    },
+    "personalContext": {
+      "summary": "使用中文交流，展现出对技术系统的好奇心、系统化探索方法和元认知能力，偏好结构化、重视精确技术文档与路径，通过验证理解系统；内部团队工作，了解 Docker 安全风险，受控环境下可接受；主动优化记忆系统，并推动建立 LLM 可识别、可执行的判别框架而非简单的删除保留决策。",
+      "updatedAt": "2026-04-02T17:34:42.841664Z"
+    },
+    "topOfMind": {
+      "summary": "",
+      "updatedAt": "2026-04-03T06:31:03.548740Z"
+    }
+  },
+  "history": {
+    "recentMonths": {
+      "summary": "",
+      "updatedAt": "2026-04-03T06:26:56.256077Z"
+    },
+    "earlierContext": {
+      "summary": "",
+      "updatedAt": ""
+    },
+    "longTermBackground": {
+      "summary": "",
+      "updatedAt": ""
+    }
+  },
+  "facts": [
+    {
+      "id": "fact_0a4762e4",
+      "content": "用户使用中文，记忆以中文记录",
+      "category": "context",
+      "confidence": 0.95,
+      "createdAt": "2026-04-02T12:22:43.337623Z",
+      "source": "7169e7d1-5eaf-49a8-bda7-81b89e89db81"
+    },
+    {
+      "id": "fact_cd7adbf0",
+      "content": "DeerFlow 在 Docker 容器中运行，且为 Docker-in-Docker (DinD) 架构，挂载主机 /var/run/docker.sock",
+      "category": "knowledge",
+      "confidence": 0.95,
+      "createdAt": "2026-04-02T13:31:35.869721Z",
+      "source": "7169e7d1-5eaf-49a8-bda7-81b89e89db81"
+    },
+    {
+      "id": "fact_14277628",
+      "content": "DeerFlow完整自举能力：MCP filesystem 读 /app/backend/ 下自身运行代码，ACP agent下 docker 相关命令调取执行日志",
+      "category": "knowledge",
+      "confidence": 0.95,
+      "createdAt": "2026-04-02T13:47:49.540716Z",
+      "source": "7169e7d1-5eaf-49a8-bda7-81b89e89db81"
+    },
+    {
+      "id": "fact_932c5896",
+      "content": "DeerFlow核心配置文件：/app/backend/extensions_config.json、config.yaml",
+      "category": "knowledge",
+      "confidence": 0.95,
+      "createdAt": "2026-04-02T13:51:37.829313Z",
+      "source": "5c8953fd-62bc-4fbd-acc0-114530730d3f"
+    },
+    {
+      "id": "fact_new_arch_001",
+      "content": "三通道文件访问：tools 中的 read_file|write_file|str_replace|bash 读写沙箱虚拟路径 /mnt/user-data、/mnt/acp-workspace、/mnt/skills；MCP filesystem 仅读写 /app/backend，延迟～500ms；ACP agent bash 全路径读写，延迟～1ms（快 500 倍）",
+      "category": "knowledge",
+      "confidence": 0.95,
+      "createdAt": "2026-04-02T15:30:00.000000Z",
+      "source": "session_summary"
+    },
+    {
+      "id": "fact_new_docker_001",
+      "content": "DeerFlow 相关容器：deer-flow-langgraph（主服务）、deer-flow-nginx、deer-flow-gateway、deer-flow-frontend",
+      "category": "knowledge",
+      "confidence": 0.95,
+      "createdAt": "2026-04-02T15:30:00.000000Z",
+      "source": "session_summary"
+    },
+    {
+      "id": "fact_new_memory_path_001",
+      "content": "记忆文件路径：/app/backend/.deer-flow/memory.json（非 /app/backend/memory.json）,中文记录",
+      "category": "knowledge",
+      "confidence": 0.95,
+      "createdAt": "2026-04-02T15:30:00.000000Z",
+      "source": "session_summary"
+    },
+    {
+      "id": "fact_new_hotreload_001",
+      "content": "DeerFlow 无热重载，ACP agent 执行 docker restart 生效配置",
+      "category": "knowledge",
+      "confidence": 0.95,
+      "createdAt": "2026-04-02T15:30:00.000000Z",
+      "source": "session_summary"
+    },
+    {
+      "id": "fact_acp_best_practice_001",
+      "content": "ACP 协作时路径：使用基于（/mnt/acp-workspace/ 与 /mnt/user-data/）推断的相对路径 ../acp-workspace/，../user-data/，禁止使用虚拟绝对路径 /mnt/**",
+      "category": "knowledge",
+      "confidence": 0.95,
+      "createdAt": "2026-04-02T15:25:00.000000Z",
+      "source": "acp_best_practices_session"
+    },
+    {
+      "id": "fact_acp_best_practice_002",
+      "content": "ACP 协作工作流：1) 任务定义写入 ../user-data/workspace/acp_task_xxx.json；2) 输入数据放 ../user-data/uploads/；3) Prompt 引用任务文件路径；4) 输出结果写入 ../user-data/outputs/",
+      "category": "knowledge",
+      "confidence": 0.95,
+      "createdAt": "2026-04-02T15:25:00.000000Z",
+      "source": "acp_best_practices_session"
+    },
+    {
+      "id": "fact_acp_best_practice_003",
+      "content": "ACP 缓冲区限制规避策略：避免在 Prompt 中直接传递大块 JSON/XML 数据，改为写入文件后传递文件路径，防止触发 'Separator is found, but chunk is longer than limit' 错误",
+      "category": "knowledge",
+      "confidence": 0.95,
+      "createdAt": "2026-04-02T15:25:00.000000Z",
+      "source": "acp_best_practices_session"
+    },
+    {
+      "id": "fact_956429eb",
+      "content": "记忆价值6维度：时效性（跨会话有效？）、抽象度（原则vs实例）、稳定性（内容易变？）、复用性（指导未来任务？）、可推断性（能否从代码/文档推出？）、独特性（是否重复？）",
+      "category": "knowledge",
+      "confidence": 0.95,
+      "createdAt": "2026-04-02T17:34:42.841664Z",
+      "source": "63ffd4ab-a369-4464-83da-38f4e428c648"
+    },
+    {
+      "id": "fact_1821886d",
+      "content": "DeerFlow工具调用超限根因：Agent陷入\"搜索→分析→再搜索\"循环、任务过度分解、失败后重试风暴、记忆维护触发频繁",
+      "category": "knowledge",
+      "confidence": 0.9,
+      "createdAt": "2026-04-03T06:25:00.363716Z",
+      "source": "2288ee21-fecd-42ab-a0d2-965108e13adf"
+    }
+  ]
+}

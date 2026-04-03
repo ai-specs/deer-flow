@@ -35,7 +35,11 @@ extensions_config.json
 # Coverage report
 coverage.xml
 coverage/
+
+# 忽略 .deer-flow 目录，但保留 memory.json
 .deer-flow/
+!**/.deer-flow/memory.json
+
 .claude/
 skills/custom/*
 logs/
