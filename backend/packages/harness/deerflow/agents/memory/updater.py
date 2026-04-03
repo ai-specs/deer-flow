@@ -18,6 +18,40 @@ from deerflow.models import create_chat_model
 
 logger = logging.getLogger(__name__)
 
+VALID_CATEGORIES = frozenset({"preference", "knowledge", "context", "behavior", "goal", "correction"})
+
+CATEGORY_MAPPINGS = {
+    "preferences": "preference",
+    "knowledges": "knowledge",
+    "contexts": "context",
+    "behaviours": "behavior",
+    "behaviors": "behavior",
+    "goals": "goal",
+    "corrections": "correction",
+    "pref": "preference",
+    "know": "knowledge",
+    "ctx": "context",
+    "behav": "behavior",
+    "偏好": "preference",
+    "知识": "knowledge",
+    "上下文": "context",
+    "背景": "context",
+    "行为": "behavior",
+    "目标": "goal",
+    "纠正": "correction",
+    "修正": "correction",
+}
+
+
+def _normalize_category(category: str | None) -> str:
+    """Normalize category to valid values."""
+    if not category:
+        return "context"
+    cat = category.strip().lower()
+    if cat in VALID_CATEGORIES:
+        return cat
+    return CATEGORY_MAPPINGS.get(cat, "context")
+
 
 def _create_empty_memory() -> dict[str, Any]:
     """Backward-compatible wrapper around the storage-layer empty-memory factory."""
@@ -84,7 +118,7 @@ def create_memory_fact(
     if not normalized_content:
         raise ValueError("content")
 
-    normalized_category = category.strip() or "context"
+    normalized_category = _normalize_category(category)
     validated_confidence = _validate_confidence(confidence)
     now = datetime.utcnow().isoformat() + "Z"
     memory_data = get_memory_data(agent_name)
@@ -148,7 +182,7 @@ def update_memory_fact(
                     raise ValueError("content")
                 updated_fact["content"] = normalized_content
             if category is not None:
-                updated_fact["category"] = category.strip() or "context"
+                updated_fact["category"] = _normalize_category(category)
             if confidence is not None:
                 updated_fact["confidence"] = _validate_confidence(confidence)
             updated_facts.append(updated_fact)
@@ -410,7 +444,7 @@ class MemoryUpdater:
                 fact_entry = {
                     "id": f"fact_{uuid.uuid4().hex[:8]}",
                     "content": normalized_content,
-                    "category": fact.get("category", "context"),
+                    "category": _normalize_category(fact.get("category")),
                     "confidence": confidence,
                     "createdAt": now,
                     "source": thread_id or "unknown",

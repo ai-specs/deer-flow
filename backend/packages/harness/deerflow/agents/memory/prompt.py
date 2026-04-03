@@ -74,10 +74,19 @@ Memory Section Guidelines:
   * behavior: Working patterns, communication habits, problem-solving approaches
   * goal: Stated objectives, learning targets, project ambitions
   * correction: Explicit agent mistakes or user corrections, including the correct approach
-- Confidence levels:
-  * 0.9-1.0: Explicitly stated facts ("I work on X", "My role is Y")
-  * 0.7-0.8: Strongly implied from actions/discussions
-  * 0.5-0.6: Inferred patterns (use sparingly, only for clear patterns)
+- Confidence levels (evaluate BOTH certainty AND long-term value):
+  * 0.9-1.0: Explicitly stated facts with HIGH long-term value
+    - Examples: "I work on X", "My role is Y", core architectural knowledge, stable preferences
+    - Must be: cross-session useful, principle-level, stable over time
+  * 0.7-0.8: Strongly implied facts with MODERATE long-term value
+    - Examples: inferred working patterns, current project context, temporary configurations
+    - Must be: relevant for weeks/months, not ephemeral
+  * 0.5-0.6: Inferred patterns with LOW long-term value (use sparingly)
+    - Examples: one-time task details, specific file paths, temporary session settings
+    - Must be: clearly stated but narrow applicability
+  * BELOW 0.5: Auto-rejected - do not store
+    - Process records, maintenance operation results, duplicate information
+    - Specific code line numbers, temporary file paths, one-time events
 
 **What Goes Where**:
 - workContext: Current job, active projects, primary tech stack
@@ -118,7 +127,7 @@ Important Rules:
 - Only add facts that are clearly stated (0.9+) or strongly implied (0.7+)
 - Use category "correction" for explicit agent mistakes or user corrections; assign confidence >= 0.95 when the correction is explicit
 - Include "sourceError" only for explicit correction facts when the prior mistake or wrong approach is clearly stated; omit it otherwise
-- Remove facts that are contradicted by new information
+- Apply deduplication rules: (1) Remove facts contradicted by new information; (2) Merge duplicate facts—if multiple facts express the same core information, keep only the most recent and complete version
 - When updating topOfMind, integrate new focus areas while removing completed/abandoned ones
   Keep 3-5 concurrent focus themes that are still active and relevant
 - For history sections, integrate new information chronologically into appropriate time period

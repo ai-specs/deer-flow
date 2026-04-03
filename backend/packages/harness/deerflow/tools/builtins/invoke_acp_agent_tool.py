@@ -1,5 +1,6 @@
 """Built-in tool for invoking external ACP-compatible agents."""
 
+import json
 import logging
 import os
 import shutil
@@ -177,7 +178,24 @@ def build_invoke_acp_agent_tool(agents: dict) -> BaseTool:
         agent_env: dict[str, str] | None = None
         if agent_config.env:
             agent_env = {k: (os.environ.get(v[1:], "") if v.startswith("$") else v) for k, v in agent_config.env.items()}
+                
+        # Create .claude/settings.json to pass model configuration to claude-agent-acp
+        # This is the supported way to configure model in claude-agent-acp
+        if agent_config.model:
+            try:
+                claude_settings_dir = os.path.join(physical_cwd, ".claude")
+                os.makedirs(claude_settings_dir, exist_ok=True)
+                claude_settings_file = os.path.join(claude_settings_dir, "settings.json")
 
+                # Only create if not exists, allowing manual overrides for per-directory model customization
+                if not os.path.exists(claude_settings_file):
+                    settings_content = {"model": agent_config.model}
+                    with open(claude_settings_file, "w", encoding="utf-8") as f:
+                        json.dump(settings_content, f, indent=2)
+                    logger.info("Created .claude/settings.json with model: %s", agent_config.model)
+            except Exception as e:
+                logger.warning("Failed to create .claude/settings.json: %s", e)
+        
         try:
             from acp import spawn_agent_process
 
@@ -214,8 +232,10 @@ def build_invoke_acp_agent_tool(agents: dict) -> BaseTool:
                         ] if headers_dict else []
                     mcp_servers_list.append(acp_config)
                 session_kwargs: dict[str, Any] = {"cwd": physical_cwd, "mcp_servers": mcp_servers_list}
-                if agent_config.model:
-                    session_kwargs["model"] = agent_config.model
+                #if agent_config.model:
+                #    session_kwargs["model"] = agent_config.model
+                # Note: model is passed via .claude/settings.json file, not via session_kwargs
++               # because claude-agent-acp reads model from settings file, not from NewSessionRequest
                 session = await conn.new_session(**session_kwargs)
                 await conn.prompt(
                     session_id=session.session_id,
