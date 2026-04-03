@@ -133,6 +133,14 @@
       "confidence": 0.9,
       "createdAt": "2026-04-03T06:25:00.363716Z",
       "source": "2288ee21-fecd-42ab-a0d2-965108e13adf"
+    },
+    {
+      "id": "fact_50ef8370",
+      "content": "用户倾向列出所有改动的绝对路径、改动前代码位置和内容、改动后代码位置和内容、diff变更预览",
+      "category": "preference",
+      "confidence": 0.95,
+      "createdAt": "2026-04-02T16:39:35.383567Z",
+      "source": "63ffd4ab-a369-4464-83da-38f4e428c648"
     }
   ]
 }
